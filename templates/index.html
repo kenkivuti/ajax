@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="myForm">
+      <label>First Name </label>
+      <input type="text" name="fname" id="fname" />
+      <br />
+      <label>Last Name </label>
+      <input type="text" name="lname" id="lname" />
+      <br />
+
+      <br />
+      <label>Email </label>
+      <input type="email" name="email" id="email" />
+      <br />
+
+      <div style="font-style: italic" id="result"></div>
+      <br />
+      <input type="submit" value="Save" />
+    </form>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.js"
+      integrity="sha512-nDf/JmbKrXtC7NfuMoUJPoUCqV57cMTae3cTHko8QChe+UlvfPKE05BHXBHtezGdM0Oq2u7ynYwDWK9r67Uyeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      $("#myForm").submit(function (e) {
+        e.preventDefault();
+        // get all the inputs into an array.
+        var inputs = $("#myForm :input");
+        console.log("inputs", inputs);
+        // not sure if you wanted this, but I thought I'd add it.
+        // get an associative array of just the values.
+        var values = {};
+        inputs.each(function () {
+          values[this.name] = $(this).val();
+        });
+
+        delete values[""];
+        console.log("values", values);
+
+        send_data(values);
+      });
+
+      //Function to send request to flask route
+      function send_data(data) {
+        $.post(
+          "/data",
+          JSON.stringify(data),
+          function (returnedData) {
+            console.log("returned data ",returnedData);
+            document.getElementById("result").innerText = returnedData['res'];
+            location.reload();
+
+          }
+        ).fail(function (error) {
+          console.log("error", error);
+        });
+      }
+    </script>
+  </body>
+</html>
